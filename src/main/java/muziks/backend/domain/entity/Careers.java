@@ -10,15 +10,11 @@ public class Careers {
 
     @Id
     @GeneratedValue
-    @Column(name = "careers_user_key")
     private Long id;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "id")
-//    private Long careersUserKey;
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "careers_user_key",
+                referencedColumnName = "id")
     private Users user;
 
     private String careersName;
