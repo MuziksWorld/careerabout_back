@@ -3,9 +3,11 @@ package muziks.backend;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import muziks.backend.domain.entity.Career;
+import muziks.backend.domain.entity.Letter;
 import muziks.backend.domain.entity.Social;
 import muziks.backend.domain.entity.User;
 import muziks.backend.repository.CareerRepository;
+import muziks.backend.repository.LetterRepository;
 import muziks.backend.repository.SocialRepository;
 import muziks.backend.repository.UserRepository;
 import org.springframework.stereotype.Component;
@@ -34,6 +36,7 @@ public class dbTest {
         private final UserRepository userRepository;
         private final CareerRepository careerRepository;
         private final SocialRepository socialRepository;
+        private final LetterRepository letterRepository;
 
         public void initUsers() {
             for (int i = 1; i < 11; i++) {
@@ -70,6 +73,10 @@ public class dbTest {
                     social.setUser(user);
                     social.setSocial(dataNum);
                     socialRepository.save(social);
+
+                    Letter letter = new Letter();
+                    letter.setUser(user);
+                    letterRepository.save(letter);
                 }
             }
         }
