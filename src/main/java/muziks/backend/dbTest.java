@@ -2,9 +2,11 @@ package muziks.backend;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import muziks.backend.domain.entity.Careers;
-import muziks.backend.domain.entity.Users;
+import muziks.backend.domain.entity.Career;
+import muziks.backend.domain.entity.Social;
+import muziks.backend.domain.entity.User;
 import muziks.backend.repository.CareerRepository;
+import muziks.backend.repository.SocialRepository;
 import muziks.backend.repository.UserRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +24,7 @@ public class dbTest {
     private void init() {
         log.info("testDB 작업 실행 완료");
         initService.initUsers();
-        initService.initCareers();
+        initService.initData();
     }
 
     @Component
@@ -31,36 +33,43 @@ public class dbTest {
     static class initService {
         private final UserRepository userRepository;
         private final CareerRepository careerRepository;
+        private final SocialRepository socialRepository;
 
         public void initUsers() {
             for (int i = 1; i < 11; i++) {
-                Users users = new Users();
+                User user = new User();
                 String userInfo = "user" + i;
-                users.setUserId(userInfo);
-                users.setUserPw(userInfo);
-                users.setUserAddress(userInfo);
-                users.setUserBirth(userInfo);
-                users.setUserEmail(userInfo);
-                users.setUserEnName(userInfo);
-                users.setUserName(userInfo);
-                users.setUserPhone(userInfo);
-                users.setUserProfileImg(userInfo);
-                users.setUserResumeBool(1);
-                userRepository.save(users);
+                user.setUserId(userInfo);
+                user.setPassword(userInfo);
+                user.setAddress(userInfo);
+                user.setBirth(userInfo);
+                user.setEmail(userInfo);
+                user.setEnglishName(userInfo);
+                user.setName(userInfo);
+                user.setPhone(userInfo);
+                user.setProfileImg(userInfo);
+                user.setResumeBool(1);
+                userRepository.save(user);
             }
         }
 
-        public void initCareers() {
+        public void initData() {
             for (int i = 1; i < 11; i++) {
                 String userName = "user" + i;
 
                 for (int j = 1; j < 3; j++) {
-                    Users user = userRepository.findByName(userName).get(0);
-                    Careers career = new Careers();
+                    String dataNum = "career" + j;
+
+                    User user = userRepository.findByName(userName).get(0);
+                    Career career = new Career();
                     career.setUser(user);
-                    String careerNum = "career" + j;
-                    career.setCareersName(careerNum);
+                    career.setName(dataNum);
                     careerRepository.save(career);
+
+                    Social social = new Social();
+                    social.setUser(user);
+                    social.setSocial(dataNum);
+                    socialRepository.save(social);
                 }
             }
         }

@@ -1,7 +1,7 @@
 package muziks.backend.domain.service;
 
 import lombok.RequiredArgsConstructor;
-import muziks.backend.domain.entity.Users;
+import muziks.backend.domain.entity.User;
 import muziks.backend.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,7 +14,7 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public void save(Users users) {
-        userRepository.save(users);
+    public void save(User user) {
+        userRepository.save(user);
     }
 }

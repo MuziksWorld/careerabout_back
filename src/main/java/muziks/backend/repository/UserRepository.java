@@ -1,7 +1,7 @@
 package muziks.backend.repository;
 
 import lombok.RequiredArgsConstructor;
-import muziks.backend.domain.entity.Users;
+import muziks.backend.domain.entity.User;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -13,14 +13,14 @@ public class UserRepository {
 
     private final EntityManager em;
 
-    public void save(Users users) {
-        em.persist(users);
+    public void save(User user) {
+        em.persist(user);
     }
 
-    public List<Users> findByName(String name) {
+    public List<User> findByName(String name) {
         return em.createQuery(
-                "select u from Users u" +
-                        " where u.userName = :name", Users.class)
+                "select u from User u" +
+                        " where u.name = :name", User.class)
                 .setParameter("name", name)
                 .getResultList();
     }
