@@ -2,14 +2,8 @@ package muziks.backend;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import muziks.backend.domain.entity.Career;
-import muziks.backend.domain.entity.Letter;
-import muziks.backend.domain.entity.Social;
-import muziks.backend.domain.entity.User;
-import muziks.backend.repository.CareerRepository;
-import muziks.backend.repository.LetterRepository;
-import muziks.backend.repository.SocialRepository;
-import muziks.backend.repository.UserRepository;
+import muziks.backend.domain.entity.*;
+import muziks.backend.repository.*;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +31,10 @@ public class dbTest {
         private final CareerRepository careerRepository;
         private final SocialRepository socialRepository;
         private final LetterRepository letterRepository;
+        private final EduRepository eduRepository;
+        private final TechRepository techRepository;
+        private final AwardRepository awardRepository;
+        private final ProjectRepository projectRepository;
 
         public void initUsers() {
             for (int i = 1; i < 11; i++) {
@@ -61,7 +59,7 @@ public class dbTest {
                 String userName = "user" + i;
 
                 for (int j = 1; j < 3; j++) {
-                    String dataNum = "career" + j;
+                    String dataNum = "data" + j;
 
                     User user = userRepository.findByName(userName).get(0);
                     Career career = new Career();
@@ -77,6 +75,26 @@ public class dbTest {
                     Letter letter = new Letter();
                     letter.setUser(user);
                     letterRepository.save(letter);
+
+                    Edu edu = new Edu();
+                    edu.setUser(user);
+                    edu.setName(dataNum);
+                    eduRepository.save(edu);
+
+                    Tech tech = new Tech();
+                    tech.setUser(user);
+                    tech.setTech(dataNum);
+                    techRepository.save(tech);
+
+                    Award award = new Award();
+                    award.setUser(user);
+                    award.setName(dataNum);
+                    awardRepository.save(award);
+
+                    Project project = new Project();
+                    project.setUser(user);
+                    project.setName(dataNum);
+                    projectRepository.save(project);
                 }
             }
         }

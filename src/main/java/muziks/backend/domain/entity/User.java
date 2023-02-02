@@ -46,4 +46,16 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<Social> socials;
+
+    @OneToMany(mappedBy = "user")
+    private List<Edu> edus;
+
+    @OneToMany(mappedBy = "user")
+    private List<Tech> teches;
+
+    @OneToMany(mappedBy = "user")
+    private List<Award> awards;
+
+    @OneToMany(mappedBy = "user")
+    private List<Project> projects;
 }
