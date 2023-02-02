@@ -10,7 +10,4 @@ public class BackendApplication {
 		SpringApplication.run(BackendApplication.class, args);
 	}
 
-	//TODO
-	// 데이터베이스 비밀번호 암호화
-
 }
