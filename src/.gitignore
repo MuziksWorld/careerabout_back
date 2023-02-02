@@ -1,0 +1,5 @@
+
+# yml 화장자 무시
+*.yml
+# properties 확장자 무시
+*.properties
