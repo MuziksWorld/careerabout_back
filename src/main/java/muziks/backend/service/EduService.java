@@ -1,4 +1,4 @@
-package muziks.backend.domain.service;
+package muziks.backend.service;
 
 import lombok.RequiredArgsConstructor;
 import muziks.backend.domain.entity.Edu;

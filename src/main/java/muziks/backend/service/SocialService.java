@@ -1,4 +1,4 @@
-package muziks.backend.domain.service;
+package muziks.backend.service;
 
 import muziks.backend.domain.entity.Social;
 import muziks.backend.repository.SocialRepository;

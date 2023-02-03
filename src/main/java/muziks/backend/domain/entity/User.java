@@ -20,15 +20,16 @@ public class User {
 
     @Column(name = "user_id")
     private String userId;
-
     @Column(name = "user_pw")
     private String password;
+    private String salt;
+
     @Column(name = "user_name")
     private String name;
     @Column(name = "user_en_name")
     private String englishName;
     @Column(name = "user_phone")
-    private String phone;
+    private String phoneNumber;
     @Column(name = "user_profileImg")
     private String profileImg;
     @Column(name = "user_email")
