@@ -6,6 +6,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import muziks.backend.service.UserService;
+import muziks.backend.settingconfig.JwtConfigs;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -17,7 +18,7 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
     private final UserService userService;
-    private String secretKey = "grknugrdfhb443";
+    private String secretKey = JwtConfigs.SECRET_KEY.name();
     // 토큰 유효시간 30분
     private Long tokenValidTime = 30 * 60 * 1000L;
 
