@@ -43,4 +43,4 @@ out/
 
 JwtTokenProvider.java
 
-/main/java/muziks/backend/settingconfig/
+/main/java/muziks/backend/settingconfig/*
