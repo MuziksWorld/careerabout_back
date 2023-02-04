@@ -10,6 +10,4 @@ public class BackendApplication {
 		SpringApplication.run(BackendApplication.class, args);
 	}
 
-	// TODO
-	// role: 일반 유저인지, 관리자인지 판단하는 컬럼 만들기
 }
