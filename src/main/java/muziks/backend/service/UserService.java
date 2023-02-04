@@ -2,9 +2,9 @@ package muziks.backend.service;
 
 import lombok.RequiredArgsConstructor;
 import muziks.backend.domain.entity.User;
-import muziks.backend.domain.form.SignForm;
+import muziks.backend.domain.form.SignDto;
+import muziks.backend.domain.utils.PasswordUtils;
 import muziks.backend.repository.UserRepository;
-import org.aspectj.bridge.Message;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +14,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.List;
+import java.util.Objects;
+import java.util.regex.Pattern;
 
 
 @Service
@@ -35,7 +37,7 @@ public class UserService {
         return userRepository.findByName(name);
     }
 
-    public void sign(SignForm form) {
+    public void sign(SignDto form) {
         User user = new User();
         user.setUserId(form.getId());
         String password = form.getPassword();
@@ -48,6 +50,28 @@ public class UserService {
         user.setPhoneNumber(form.getPhoneNumber());
 
         userRepository.save(user);
+    }
+
+    public boolean isMatches(String userId, String password) {
+        //TODO
+        // 어떻게 하면 null 방어적으로 깔끔하게 코드를 짤 수 있을까?
+        if (userRepository.findById(userId).isEmpty()) {
+            return false;
+        }
+        User user = userRepository.findById(userId).get(0);
+        String salt = user.getSalt();
+
+        String findPassword = sha512(password, salt);
+        if (Objects.equals(user.getPassword(), findPassword)) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isValidPassword(String password) {
+        Pattern passwordPattern = PasswordUtils.passwordPattern;
+        boolean isValidPassword = passwordPattern.matcher(password).matches();
+        return isValidPassword;
     }
 
     private String sha512(String password, String salt) {
