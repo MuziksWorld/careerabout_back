@@ -56,15 +56,15 @@ public class LoginController {
         }
     }
 
-    // TODO
-    // 로그아웃 요청이 왔을 때 어떻게 헤더에서 토큰 값을 꺼내고 검증하는지?
     @PostMapping("/logout")
-    public void logout(HttpServletRequest request) {
+    public String logout(HttpServletRequest request) {
         String findAuthorization = request.getHeader("Authorization");
         log.info("authorization= {} ",findAuthorization);
         String authorization = findAuthorization.substring(7, findAuthorization.length());
         User findUser = userService.findByAuthorization(authorization);
         findUser.setAuthorization(null);
         userService.save(findUser);
+
+        return "로그아웃 완료";
     }
 }
