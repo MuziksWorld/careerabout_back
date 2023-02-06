@@ -32,4 +32,12 @@ public class UserRepository {
                 .setParameter("id", id)
                 .getResultList();
     }
+
+    public User findByAuthorization(String authorization) {
+        return em.createQuery(
+                "select u from User u" +
+                        " where u.authorization = :authorization", User.class)
+                .setParameter("authorization", authorization)
+                .getResultList().get(0);
+    }
 }

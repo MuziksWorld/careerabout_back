@@ -100,4 +100,8 @@ public class UserService {
         }
         return salt;
     }
+
+    public User findByAuthorization(String authorization) {
+        return userRepository.findByAuthorization(authorization);
+    }
 }

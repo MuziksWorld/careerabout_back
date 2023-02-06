@@ -33,8 +33,11 @@ public class LoginController {
 
         User user = userService.findById(loginForm.getId()).get(0);
         if (!result.hasErrors()) {
-            log.info("jwtToken= {}", jwtTokenProvider.createToken(id, user.getRole()));
-            request.setAttribute("jwtToken", jwtTokenProvider.createToken(id, user.getRole()));
+            String token = jwtTokenProvider.createToken(id, user.getRole());
+            request.setAttribute("jwtToken", token);
+            log.info("jwtToken= {}", token);
+            user.setAuthorization(token);
+            userService.save(user);
             return "로그인 완료";
         }
         log.info("result= {}", result.getFieldError().toString());
@@ -56,7 +59,12 @@ public class LoginController {
     // TODO
     // 로그아웃 요청이 왔을 때 어떻게 헤더에서 토큰 값을 꺼내고 검증하는지?
     @PostMapping("/logout")
-    public HttpServletRequest logout(HttpServletRequest request) {
-        return request;
+    public void logout(HttpServletRequest request) {
+        String findAuthorization = request.getHeader("Authorization");
+        log.info("authorization= {} ",findAuthorization);
+        String authorization = findAuthorization.substring(7, findAuthorization.length());
+        User findUser = userService.findByAuthorization(authorization);
+        findUser.setAuthorization(null);
+        userService.save(findUser);
     }
 }
