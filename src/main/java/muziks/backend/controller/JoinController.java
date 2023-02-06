@@ -2,7 +2,6 @@ package muziks.backend.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import muziks.backend.domain.form.LoginForm;
 import muziks.backend.domain.form.SignDto;
 import muziks.backend.service.UserService;
 import org.springframework.validation.BindingResult;
