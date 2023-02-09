@@ -33,10 +33,10 @@ public class LoginController {
 
         User user = userService.findById(loginForm.getId()).get(0);
         if (!result.hasErrors()) {
-            String token = jwtTokenProvider.createToken(id, user.getRole());
-            request.setAttribute("jwtToken", token);
-            log.info("jwtToken= {}", token);
-            user.setAuthorization(token);
+//            String token = jwtTokenProvider.createToken(id, user.getRole());
+//            request.setAttribute("jwtToken", token);
+//            log.info("jwtToken= {}", token);
+//            user.setAuthorization(token);
             userService.save(user);
             return "로그인 완료";
         }
@@ -62,7 +62,7 @@ public class LoginController {
         log.info("authorization= {} ",findAuthorization);
         String authorization = findAuthorization.substring(7, findAuthorization.length());
         User findUser = userService.findByAuthorization(authorization);
-        findUser.setAuthorization(null);
+//        findUser.setAuthorization(null);
         userService.save(findUser);
 
         return "로그아웃 완료";

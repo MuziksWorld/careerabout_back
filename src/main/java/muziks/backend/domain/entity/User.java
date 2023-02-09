@@ -7,7 +7,7 @@ import java.util.List;
 
 @Entity
 @Data
-//@Table(name = "users")
+@Table(name = "users")
 public class User {
 
     // TODO
@@ -16,31 +16,40 @@ public class User {
     @Id
     @GeneratedValue
     @Column(name = "id")
-    private Long id;
+    private int id;
 
-    @Column(name = "user_id")
+    @Column(name = "user_id", columnDefinition = "VARCHAR", length = 60)
     private String userId;
-    @Column(name = "user_pw")
-    private String password;
-    private String salt;
 
-    @Column(name = "user_name")
+    @Column(name = "user_pw", columnDefinition = "VARCHAR", length = 200)
+    private String password;
+
+    @Column(name = "user_name", columnDefinition = "VARCHAR", length = 60)
     private String name;
-    @Column(name = "user_en_name")
+
+    @Column(name = "user_en_name", columnDefinition = "VARCHAR", length = 60)
     private String englishName;
-    @Column(name = "user_phone")
+
+    @Column(name = "user_phone", columnDefinition = "VARCHAR", length = 60)
     private String phoneNumber;
-    @Column(name = "user_profileImg")
+
+    @Column(name = "user_profileImg", columnDefinition = "VARCHAR", length = 200)
     private String profileImg;
-    @Column(name = "user_email")
+
+    @Column(name = "user_email", columnDefinition = "VARCHAR", length = 60)
     private String email;
-    @Column(name = "user_address")
+
+    @Column(name = "user_address", columnDefinition = "VARCHAR", length = 60)
     private String address;
-    @Column(name = "user_birth")
+
+    @Column(name = "user_birth", columnDefinition = "VARCHAR", length = 60)
     private String birth;
-    @Column(name = "user_resume_bool")
+
+    @Column(name = "user_resume_bool", columnDefinition = "INTEGER")
     private int resumeBool;
 
+//    @Column(name = "salt", columnDefinition = "VARCHAR", length = 255)
+//    private String salt;
 
     @OneToMany(mappedBy = "user")
     private List<Career> careers;
@@ -60,6 +69,8 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Project> projects;
 
-    private String authorization;
-    private String role;
+//    private String authorization;
+
+//    @Column(name = "salt", columnDefinition = "VARCHAR", length = 60)
+//    private String role;
 }

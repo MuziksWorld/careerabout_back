@@ -1,24 +1,24 @@
 package muziks.backend.domain.entity;
 
 import lombok.Data;
-import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
 
 @Entity
 @Data
-//@Table(name = "techs")
+@Table(name = "techs")
 public class Tech {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "techs_user_key",
                 referencedColumnName = "id")
+//    @Column(name = "techs_user_key", columnDefinition = "INTEGER")
     private User user;
 
-    @Column(name = "user_tech")
+    @Column(name = "user_tech", columnDefinition = "VARCHAR", length = 60)
     private String tech;
 }

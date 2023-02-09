@@ -6,15 +6,19 @@ import javax.persistence.*;
 
 @Entity
 @Data
-//@Table(name = "letters")
+@Table(name = "letters")
 public class Letter {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "letters_user_key",
             referencedColumnName = "id")
+//    @Column(name = "letters_user_key", columnDefinition = "INTEGER")
     private User user;
+
+    @Column(name = "letters_letter", columnDefinition = "VARCHAR", length = 500)
+    private String letter;
 }

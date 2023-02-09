@@ -14,7 +14,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.List;
-import java.util.Objects;
 import java.util.regex.Pattern;
 
 
@@ -44,7 +43,7 @@ public class UserService {
         String salt = salt();
         String hashedPassword = sha512(password, salt);
 
-        user.setSalt(salt);
+//        user.setSalt(salt);
         user.setPassword(hashedPassword);
         user.setName(form.getName());
         user.setPhoneNumber(form.getPhoneNumber());
@@ -59,12 +58,12 @@ public class UserService {
             return false;
         }
         User user = userRepository.findById(userId).get(0);
-        String salt = user.getSalt();
+//        String salt = user.getSalt();
 
-        String findPassword = sha512(password, salt);
-        if (Objects.equals(user.getPassword(), findPassword)) {
-            return true;
-        }
+//        String findPassword = sha512(password, salt);
+//        if (Objects.equals(user.getPassword(), findPassword)) {
+//            return true;
+//        }
         return false;
     }
 

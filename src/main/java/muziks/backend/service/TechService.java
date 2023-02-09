@@ -3,7 +3,6 @@ package muziks.backend.service;
 import lombok.RequiredArgsConstructor;
 import muziks.backend.domain.entity.Tech;
 import muziks.backend.repository.TechRepository;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 @Service
