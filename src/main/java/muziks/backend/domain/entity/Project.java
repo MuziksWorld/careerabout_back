@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 @Entity
 @Data
-@Table(name = "projects")
+//@Table(name = "projects")
 public class Project {
 
     @Id
@@ -18,14 +18,26 @@ public class Project {
 //    @Column(name = "projects_user_key", columnDefinition = "INTEGER")
     private User user;
 
-    @Column(name = "projects_name", columnDefinition = "VARCHAR", length = 60)
+//    @Column(name = "projects_name", columnDefinition = "VARCHAR", length = 60)
+//    private String name;
+//    @Column(name = "projects_start_day", columnDefinition = "VARCHAR", length = 60)
+//    private String startDay;
+//    @Column(name = "projects_end_day", columnDefinition = "VARCHAR", length = 60)
+//    private String endDay;
+//    @Column(name = "projects_explanation", columnDefinition = "VARCHAR", length = 60)
+//    private String explanation;
+//    @Column(name = "projects_link", columnDefinition = "VARCHAR", length = 400)
+//    private String link;
+
+
+    @Column(name = "projects_name")
     private String name;
-    @Column(name = "projects_start_day", columnDefinition = "VARCHAR", length = 60)
+    @Column(name = "projects_start_day")
     private String startDay;
-    @Column(name = "projects_end_day", columnDefinition = "VARCHAR", length = 60)
+    @Column(name = "projects_end_day")
     private String endDay;
-    @Column(name = "projects_explanation", columnDefinition = "VARCHAR", length = 60)
+    @Column(name = "projects_explanation")
     private String explanation;
-    @Column(name = "projects_link", columnDefinition = "VARCHAR", length = 400)
+    @Column(name = "projects_link")
     private String link;
 }

@@ -37,11 +37,14 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
         if (token.isEmpty()) {
             throw new IllegalArgumentException("토큰이 존재하지 않습니다.");
         }
-        if (!jwtTokenProvider.validateToken(token)) {
-            throw new IllegalArgumentException("토큰이 유효하지 않습니다.");
+        if (!jwtTokenProvider.validateToken(token, jwtTokenProvider.getRefreshTokenKey())) {
+            throw new IllegalArgumentException("리프레쉬 토큰이 유효하지 않습니다.");
+        }
+        if (!jwtTokenProvider.validateToken(token, jwtTokenProvider.getAccessTokenKey())) {
+            throw new IllegalArgumentException("엑세스 토큰이 유효하지 않습니다.");
         }
 
-        String id = jwtTokenProvider.getAuthentication(token).getSubject();
+        String id = jwtTokenProvider.getAuthentication(token, jwtTokenProvider.getAccessTokenKey()).getSubject();
         request.setAttribute("id", id);
         return true;
     }

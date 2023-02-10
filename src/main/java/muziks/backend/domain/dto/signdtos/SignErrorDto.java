@@ -1,4 +1,4 @@
-package muziks.backend.domain.signdtos;
+package muziks.backend.domain.dto.signdtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -2,17 +2,15 @@ package muziks.backend.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import muziks.backend.domain.entity.User;
-import muziks.backend.domain.logindtos.LoginDto;
-import muziks.backend.domain.logindtos.LoginErrorDto;
+import muziks.backend.domain.dto.logindtos.LoginDto;
+import muziks.backend.domain.dto.logindtos.LoginErrorDto;
 import muziks.backend.jwt.JwtTokenProvider;
 import muziks.backend.jwt.Token;
+import muziks.backend.service.LoginService;
 import muziks.backend.service.UserService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,59 +25,58 @@ import java.util.List;
 public class LoginController {
 
     private final UserService userService;
+    private final LoginService loginService;
     private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/login")
     public ResponseEntity<Object> login(@RequestBody LoginDto loginDto,
-                                HttpServletRequest request,
-                                BindingResult result) {
-        String id = loginDto.getId();
-        String password = loginDto.getPassword();
-        validateLoginId(result, id);
-        validateLoginPassword(loginDto, result, password);
+                                        HttpServletRequest request,
+                                        BindingResult result) {
+        validateLoginId(loginDto, result);
+        validateLoginPassword(loginDto, result);
 
         if (result.hasErrors()) {
-            log.info("result= {}", result.getFieldErrors());
-            List<Object> errors = new ArrayList<>();
-            result.getFieldErrors()
-                    .forEach(e -> errors.add(new LoginErrorDto(e.getField(), e.getDefaultMessage())));
-            return ResponseEntity.badRequest()
-                    .body(errors);
+            return getErrors(result);
         }
-        User user = userService.findById(loginDto.getId()).get(0);
-
-        Token token = jwtTokenProvider.createToken(id, user.getRole());
-        request.setAttribute("jwtToken", token);
-        log.info("jwtToken= {}", token);
-        user.setAuthorization(token.getRefreshToken());
-        userService.save(user);
+        Token token = loginService.createAndGetToken(loginDto.getId());
+        request.setAttribute("token", token);
+        log.info("refreshToken= {}", token.getRefreshToken());
+        log.info("accessToken= {}", token.getAccessToken());
         return ResponseEntity.ok()
                 .body("로그인 완료");
     }
 
-    private void validateLoginPassword(LoginDto loginDto, BindingResult result, String password) {
-        if (!userService.isMatches(loginDto.getId(), password)) {
+    @PostMapping("/logout")
+    public ResponseEntity<Object> logout(HttpServletRequest request) {
+
+        Token token = (Token) request.getAttribute("token");
+        log.info("refreshToken= {}", token.getRefreshToken());
+        log.info("accessToken= {}", token.getAccessToken());
+
+        String findToken = request.getHeader("Authorization");
+        loginService.logout(findToken);
+        return ResponseEntity.ok()
+                .body("로그아웃 완료");
+    }
+
+    private ResponseEntity<Object> getErrors(BindingResult result) {
+        log.info("result= {}", result.getFieldErrors());
+        List<Object> errors = new ArrayList<>();
+        result.getFieldErrors()
+                .forEach(e -> errors.add(new LoginErrorDto(e.getField(), e.getDefaultMessage())));
+        return ResponseEntity.badRequest()
+                .body(errors);
+    }
+
+    private void validateLoginPassword(LoginDto loginDto, BindingResult result) {
+        if (!userService.isMatches(loginDto.getId(), loginDto.getPassword())) {
             result.addError(new FieldError("loginForm", "password", "비밀번호가 올바르지 않습니다."));
         }
     }
 
-    private void validateLoginId(BindingResult result, String id) {
-        if (userService.findById(id).size() == 0) {
+    private void validateLoginId(LoginDto loginDto, BindingResult result) {
+        if (userService.findById(loginDto.getId()).size() == 0) {
             result.addError(new FieldError("loginForm", "id", "아이디가 존재하지 않습니다."));
         }
-    }
-
-    @PostMapping("/logout")
-    public ResponseEntity<Object> logout(HttpServletRequest request,
-                         @ModelAttribute Model model) {
-        String findAuthorization = request.getHeader("Authorization");
-        log.info("authorization= {} ",findAuthorization);
-        String authorization = findAuthorization.substring(7, findAuthorization.length());
-        User findUser = userService.findByAuthorization(authorization);
-        findUser.setAuthorization(null);
-        userService.save(findUser);
-
-        return ResponseEntity.ok()
-                .body("로그아웃 완료");
     }
 }

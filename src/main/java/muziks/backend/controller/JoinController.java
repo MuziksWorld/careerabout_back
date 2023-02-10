@@ -2,9 +2,9 @@ package muziks.backend.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import muziks.backend.domain.signdtos.SignDto;
-import muziks.backend.domain.signdtos.SignErrorDtos;
-import muziks.backend.domain.signdtos.SignErrorDto;
+import muziks.backend.domain.dto.signdtos.SignDto;
+import muziks.backend.domain.dto.signdtos.SignErrorDtos;
+import muziks.backend.domain.dto.signdtos.SignErrorDto;
 import muziks.backend.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -25,24 +25,24 @@ public class JoinController {
     @PostMapping("/sign")
     public ResponseEntity<Object> sign(@RequestBody @Valid SignDto signDto,
                                                     BindingResult bindingResult) {
-
-        String id = signDto.getId();
-        String password = signDto.getPassword();
-        validateId(bindingResult, id);
-        validatePasswordPattern(bindingResult, password);
+        validateId(bindingResult, signDto.getId());
+        validatePasswordPattern(bindingResult, signDto.getPassword());
 
         if (bindingResult.hasErrors()) {
-            log.info("errors= {}", bindingResult);
-            SignErrorDtos signErrorDtos = new SignErrorDtos();
-            bindingResult.getFieldErrors()
-                    .forEach(e -> signErrorDtos.add(new SignErrorDto(e.getField(), e.getDefaultMessage())));
-            return ResponseEntity.badRequest()
-                    .body(signErrorDtos);
+            return getErrors(bindingResult);
         }
-
         userService.sign(signDto);
         return ResponseEntity.ok()
                 .body("회원가입 완료");
+    }
+
+    private ResponseEntity<Object> getErrors(BindingResult bindingResult) {
+        log.info("errors= {}", bindingResult);
+        SignErrorDtos signErrorDtos = new SignErrorDtos();
+        bindingResult.getFieldErrors()
+                .forEach(e -> signErrorDtos.add(new SignErrorDto(e.getField(), e.getDefaultMessage())));
+        return ResponseEntity.badRequest()
+                .body(signErrorDtos);
     }
 
     private void validatePasswordPattern(BindingResult result, String password) {

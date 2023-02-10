@@ -1,4 +1,4 @@
-package muziks.backend.domain.logindtos;
+package muziks.backend.domain.dto.logindtos;
 
 import lombok.Data;
 

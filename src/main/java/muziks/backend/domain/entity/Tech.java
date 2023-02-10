@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 @Entity
 @Data
-@Table(name = "techs")
+//@Table(name = "techs")
 public class Tech {
 
     @Id
@@ -19,6 +19,10 @@ public class Tech {
 //    @Column(name = "techs_user_key", columnDefinition = "INTEGER")
     private User user;
 
-    @Column(name = "user_tech", columnDefinition = "VARCHAR", length = 60)
+//    @Column(name = "user_tech", columnDefinition = "VARCHAR", length = 60)
+//    private String tech;
+
+
+    @Column(name = "user_tech")
     private String tech;
 }

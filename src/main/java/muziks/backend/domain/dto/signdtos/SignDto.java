@@ -1,4 +1,4 @@
-package muziks.backend.domain.signdtos;
+package muziks.backend.domain.dto.signdtos;
 
 import lombok.Data;
 import muziks.backend.domain.utils.PasswordUtils;

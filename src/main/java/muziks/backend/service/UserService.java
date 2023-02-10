@@ -2,7 +2,7 @@ package muziks.backend.service;
 
 import lombok.RequiredArgsConstructor;
 import muziks.backend.domain.entity.User;
-import muziks.backend.domain.signdtos.SignDto;
+import muziks.backend.domain.dto.signdtos.SignDto;
 import muziks.backend.domain.utils.PasswordUtils;
 import muziks.backend.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -99,9 +99,5 @@ public class UserService {
             e.printStackTrace();
         }
         return salt;
-    }
-
-    public User findByAuthorization(String authorization) {
-        return userRepository.findByAuthorization(authorization);
     }
 }
