@@ -1,9 +1,9 @@
-package muziks.backend.domain.form;
+package muziks.backend.domain.logindtos;
 
 import lombok.Data;
 
 @Data
-public class LoginForm {
+public class LoginDto {
 
     private String id;
     private String password;

@@ -2,10 +2,11 @@ package muziks.backend.settingconfig;
 
 public enum JwtConfigs {
 
-    SECRET_KEY("grknugrdfhb443");
+    REFRESH_TOKEN_KEY("grknugrdfhb443"),
+    ACCESS_TOKEN_KEY("sdgdfgergsd");
 
-    private String secretKey;
-    JwtConfigs(String secretKey) {
-        this.secretKey = secretKey;
+    private String tokenKey;
+    JwtConfigs(String tokenKey) {
+        this.tokenKey = tokenKey;
     }
 }

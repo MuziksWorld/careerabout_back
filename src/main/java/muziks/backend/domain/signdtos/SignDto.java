@@ -1,4 +1,4 @@
-package muziks.backend.domain.form;
+package muziks.backend.domain.signdtos;
 
 import lombok.Data;
 import muziks.backend.domain.utils.PasswordUtils;

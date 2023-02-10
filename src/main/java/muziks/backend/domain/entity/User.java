@@ -48,8 +48,8 @@ public class User {
     @Column(name = "user_resume_bool", columnDefinition = "INTEGER")
     private int resumeBool;
 
-//    @Column(name = "salt", columnDefinition = "VARCHAR", length = 255)
-//    private String salt;
+    @Column(name = "salt", columnDefinition = "VARCHAR", length = 255)
+    private String salt;
 
     @OneToMany(mappedBy = "user")
     private List<Career> careers;
@@ -69,8 +69,8 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Project> projects;
 
-//    private String authorization;
+    private String authorization;
 
-//    @Column(name = "salt", columnDefinition = "VARCHAR", length = 60)
-//    private String role;
+    @Column(name = "role", columnDefinition = "VARCHAR", length = 60)
+    private String role;
 }

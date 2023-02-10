@@ -2,8 +2,11 @@ package muziks.backend.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import muziks.backend.domain.form.SignDto;
+import muziks.backend.domain.signdtos.SignDto;
+import muziks.backend.domain.signdtos.SignErrorDtos;
+import muziks.backend.domain.signdtos.SignErrorDto;
 import muziks.backend.service.UserService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,22 +23,26 @@ public class JoinController {
     private final UserService userService;
 
     @PostMapping("/sign")
-    public String sign(@RequestBody @Valid SignDto signDto,
-                       BindingResult result) {
+    public ResponseEntity<Object> sign(@RequestBody @Valid SignDto signDto,
+                                                    BindingResult bindingResult) {
 
         String id = signDto.getId();
         String password = signDto.getPassword();
-        validateId(result, id);
-        validatePasswordPattern(result, password);
+        validateId(bindingResult, id);
+        validatePasswordPattern(bindingResult, password);
 
-        if (result.hasErrors()) {
-            log.info("errors= {}", result);
+        if (bindingResult.hasErrors()) {
+            log.info("errors= {}", bindingResult);
+            SignErrorDtos signErrorDtos = new SignErrorDtos();
+            bindingResult.getFieldErrors()
+                    .forEach(e -> signErrorDtos.add(new SignErrorDto(e.getField(), e.getDefaultMessage())));
+            return ResponseEntity.badRequest()
+                    .body(signErrorDtos);
         }
-        if (!result.hasErrors()) {
-            userService.sign(signDto);
-            return "회원가입 완료";
-        }
-        return result.getFieldError().toString();
+
+        userService.sign(signDto);
+        return ResponseEntity.ok()
+                .body("회원가입 완료");
     }
 
     private void validatePasswordPattern(BindingResult result, String password) {
