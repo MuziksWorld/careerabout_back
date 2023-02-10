@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import muziks.backend.domain.entity.User;
 import muziks.backend.domain.logindtos.LoginDto;
+import muziks.backend.domain.logindtos.LoginErrorDto;
 import muziks.backend.jwt.JwtTokenProvider;
 import muziks.backend.jwt.Token;
 import muziks.backend.service.UserService;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -35,21 +37,24 @@ public class LoginController {
         String password = loginDto.getPassword();
         validateLoginId(result, id);
         validateLoginPassword(loginDto, result, password);
-        User user = userService.findById(loginDto.getId()).get(0);
 
         if (result.hasErrors()) {
-            log.info("result= {}", result.getFieldError().toString());
-            List<>
-
-            return "로그인 실패";
+            log.info("result= {}", result.getFieldErrors());
+            List<Object> errors = new ArrayList<>();
+            result.getFieldErrors()
+                    .forEach(e -> errors.add(new LoginErrorDto(e.getField(), e.getDefaultMessage())));
+            return ResponseEntity.badRequest()
+                    .body(errors);
         }
+        User user = userService.findById(loginDto.getId()).get(0);
 
         Token token = jwtTokenProvider.createToken(id, user.getRole());
         request.setAttribute("jwtToken", token);
         log.info("jwtToken= {}", token);
         user.setAuthorization(token.getRefreshToken());
         userService.save(user);
-        return "로그인 완료";
+        return ResponseEntity.ok()
+                .body("로그인 완료");
     }
 
     private void validateLoginPassword(LoginDto loginDto, BindingResult result, String password) {
@@ -65,7 +70,7 @@ public class LoginController {
     }
 
     @PostMapping("/logout")
-    public String logout(HttpServletRequest request,
+    public ResponseEntity<Object> logout(HttpServletRequest request,
                          @ModelAttribute Model model) {
         String findAuthorization = request.getHeader("Authorization");
         log.info("authorization= {} ",findAuthorization);
@@ -74,6 +79,7 @@ public class LoginController {
         findUser.setAuthorization(null);
         userService.save(findUser);
 
-        return "로그아웃 완료";
+        return ResponseEntity.ok()
+                .body("로그아웃 완료");
     }
 }
