@@ -9,4 +9,8 @@ public enum JwtConfigs {
     JwtConfigs(String tokenKey) {
         this.tokenKey = tokenKey;
     }
+
+    public String getKey() {
+        return tokenKey;
+    }
 }

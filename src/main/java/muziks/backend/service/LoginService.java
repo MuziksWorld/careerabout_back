@@ -39,10 +39,9 @@ public class LoginService {
         return userRepository.findByAuthorization(authorization);
     }
 
-    public void logout(String findAuthorization) {
-        log.info("authorization= {} ",findAuthorization);
-        String authorization = findAuthorization.substring(7);
-        User findUser = findByAuthorization(authorization);
+    public void logout(String refreshToken) {
+        log.info("authorization= {} ",refreshToken);
+        User findUser = findByAuthorization(refreshToken);
         findUser.setAuthorization(null);
 //        save(findUser);
     }

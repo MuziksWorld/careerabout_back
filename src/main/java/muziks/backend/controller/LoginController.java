@@ -13,11 +13,13 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -30,31 +32,38 @@ public class LoginController {
 
     @PostMapping("/login")
     public ResponseEntity<Object> login(@RequestBody LoginDto loginDto,
-                                        HttpServletRequest request,
-                                        BindingResult result) {
-        validateLoginId(loginDto, result);
-        validateLoginPassword(loginDto, result);
+                                        BindingResult bindingResult) {
+        validateLoginId(loginDto, bindingResult);
+        validateLoginPassword(loginDto, bindingResult);
 
-        if (result.hasErrors()) {
-            return getErrors(result);
+        if (bindingResult.hasErrors()) {
+            return getErrors(bindingResult);
         }
         Token token = loginService.createAndGetToken(loginDto.getId());
-        request.setAttribute("token", token);
         log.info("refreshToken= {}", token.getRefreshToken());
         log.info("accessToken= {}", token.getAccessToken());
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("accessToken", token.getAccessToken());
+        result.put("refreshToken", token.getRefreshToken());
+        result.put("userInfo", jwtTokenProvider.getUserPk(token.getAccessToken(), jwtTokenProvider.getAccessTokenKey()));
+        result.put("accessTokenInfo", jwtTokenProvider.getAuthentication(token.getAccessToken(), jwtTokenProvider.getAccessTokenKey()));
+
         return ResponseEntity.ok()
-                .body("로그인 완료");
+                .body(result);
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Object> logout(HttpServletRequest request) {
-
-        Token token = (Token) request.getAttribute("token");
-        log.info("refreshToken= {}", token.getRefreshToken());
-        log.info("accessToken= {}", token.getAccessToken());
-
-        String findToken = request.getHeader("Authorization");
-        loginService.logout(findToken);
+    public ResponseEntity<Object> logout(@RequestBody String refreshToken) {
+        try {
+            loginService.logout(refreshToken);
+        } catch (IndexOutOfBoundsException e) {
+            Map<String, Object> result = new HashMap<>();
+            result.put("error", e.getClass());
+            result.put("errorMessage", e.getMessage());
+            return ResponseEntity.badRequest()
+                    .body(result);
+        }
         return ResponseEntity.ok()
                 .body("로그아웃 완료");
     }
