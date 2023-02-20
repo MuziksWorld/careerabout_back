@@ -3,11 +3,13 @@ package muziks.backend;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+// TODO
+	// Controlller에서 Entity 사용하지 않고 service단에서 dto로 뿌려줄 수 있도록 리팩토링
+	// dto를 파라미터로 받아 entity로 만들어주는 toEntity 메서드 구현 (service에서)
 @SpringBootApplication
 public class BackendApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(BackendApplication.class, args);
 	}
-
 }

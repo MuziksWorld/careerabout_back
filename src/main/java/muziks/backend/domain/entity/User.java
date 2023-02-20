@@ -69,7 +69,10 @@ public class User {
     private String salt;
     @Column(name = "role")
     private String role;
-    private String authorization;
+
+    @OneToOne
+    @JoinColumn(name = "REFRESH_TOKEN_ID", referencedColumnName = "id")
+    private RefreshToken refreshToken;
 
 
     @OneToMany(mappedBy = "user")

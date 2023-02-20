@@ -32,6 +32,7 @@ public class JoinController {
             return getErrors(bindingResult);
         }
         userService.sign(signDto);
+        userService.createAndSaveToken(signDto.getId());
         return ResponseEntity.ok()
                 .body("회원가입 완료");
     }

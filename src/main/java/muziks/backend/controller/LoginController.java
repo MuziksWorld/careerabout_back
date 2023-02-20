@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import muziks.backend.domain.dto.logindtos.LoginDto;
 import muziks.backend.domain.dto.logindtos.LoginErrorDto;
 import muziks.backend.jwt.JwtTokenProvider;
-import muziks.backend.jwt.Token;
+import muziks.backend.domain.dto.jwtdtos.TokenDto;
 import muziks.backend.service.LoginService;
 import muziks.backend.service.UserService;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +13,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -39,15 +38,14 @@ public class LoginController {
         if (bindingResult.hasErrors()) {
             return getErrors(bindingResult);
         }
-        Token token = loginService.createAndGetToken(loginDto.getId());
-        log.info("refreshToken= {}", token.getRefreshToken());
-        log.info("accessToken= {}", token.getAccessToken());
+        loginService.login(loginDto);
+        TokenDto tokenDto = loginService.getTokenDto(loginDto);
 
         Map<String, Object> result = new HashMap<>();
-        result.put("accessToken", token.getAccessToken());
-        result.put("refreshToken", token.getRefreshToken());
-        result.put("userInfo", jwtTokenProvider.getUserPk(token.getAccessToken(), jwtTokenProvider.getAccessTokenKey()));
-        result.put("accessTokenInfo", jwtTokenProvider.getAuthentication(token.getAccessToken(), jwtTokenProvider.getAccessTokenKey()));
+        result.put("accessToken", tokenDto.getAccessToken());
+        result.put("refreshToken", tokenDto.getRefreshToken());
+        result.put("userInfo", jwtTokenProvider.getUserPk(tokenDto.getAccessToken(), jwtTokenProvider.getAccessTokenKey()));
+        result.put("accessTokenInfo", jwtTokenProvider.getAuthentication(tokenDto.getAccessToken(), jwtTokenProvider.getAccessTokenKey()));
 
         return ResponseEntity.ok()
                 .body(result);
@@ -84,7 +82,7 @@ public class LoginController {
     }
 
     private void validateLoginId(LoginDto loginDto, BindingResult result) {
-        if (userService.findById(loginDto.getId()).size() == 0) {
+        if (userService.findByName(loginDto.getId()).size() == 0) {
             result.addError(new FieldError("loginForm", "id", "아이디가 존재하지 않습니다."));
         }
     }

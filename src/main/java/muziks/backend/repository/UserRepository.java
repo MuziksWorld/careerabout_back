@@ -1,6 +1,7 @@
 package muziks.backend.repository;
 
 import lombok.RequiredArgsConstructor;
+import muziks.backend.domain.entity.RefreshToken;
 import muziks.backend.domain.entity.User;
 import org.springframework.stereotype.Repository;
 
@@ -33,11 +34,12 @@ public class UserRepository {
                 .getResultList();
     }
 
-    public User findByAuthorization(String authorization) {
+    public RefreshToken findRefreshTokenById(String id) {
         return em.createQuery(
                 "select u from User u" +
-                        " where u.authorization = :authorization", User.class)
-                .setParameter("authorization", authorization)
-                .getResultList().get(0);
+                        " where u.refreshToken = :id" +
+                        " join fetch u.refreshToken", RefreshToken.class)
+                .setParameter("id", id)
+                .getSingleResult();
     }
 }

@@ -1,9 +1,14 @@
 package muziks.backend.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import muziks.backend.domain.dto.jwtdtos.TokenDto;
+import muziks.backend.domain.entity.RefreshToken;
 import muziks.backend.domain.entity.User;
 import muziks.backend.domain.dto.signdtos.SignDto;
 import muziks.backend.domain.utils.PasswordUtils;
+import muziks.backend.jwt.JwtTokenProvider;
+import muziks.backend.repository.JwtRepository;
 import muziks.backend.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,23 +23,18 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
+    private final JwtRepository jwtRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public void save(User user) {
         userRepository.save(user);
-    }
-
-    public List<User> findById(String id) {
-        return userRepository.findById(id);
-    }
-
-    public List<User> findByName(String name) {
-        return userRepository.findByName(name);
     }
 
     public void sign(SignDto form) {
@@ -52,13 +52,34 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public void createAndSaveToken(String id) {
+        User user = findByName(id).get(0);
+        String refreshToken = jwtTokenProvider.createRefreshToken(user.getUserId(), user.getRole());
+        String accessToken = jwtTokenProvider.createAccessToken(user.getUserId(), user.getRole());
+        log.info("refreshToken= {}", refreshToken);
+        log.info("accessToken= {}", accessToken);
+        RefreshToken refreshTokenEntity = new RefreshToken();
+        refreshTokenEntity.setRefreshToken(refreshToken);
+        user.setRefreshToken(refreshTokenEntity);
+        jwtRepository.save(refreshTokenEntity);
+        userRepository.save(user);
+    }
+
+    public List<User> findById(String id) {
+        return userRepository.findById(id);
+    }
+
+    public List<User> findByName(String name) {
+        return userRepository.findByName(name);
+    }
+
     public boolean isMatches(String userId, String password) {
         //TODO
         // 어떻게 하면 null 방어적으로 깔끔하게 코드를 짤 수 있을까?
-        if (userRepository.findById(userId).isEmpty()) {
+        if (userRepository.findByName(userId).isEmpty()) {
             return false;
         }
-        User user = userRepository.findById(userId).get(0);
+        User user = userRepository.findByName(userId).get(0);
         String salt = user.getSalt();
 
         String findPassword = sha512(password, salt);

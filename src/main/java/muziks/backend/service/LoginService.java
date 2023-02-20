@@ -1,13 +1,20 @@
 package muziks.backend.service;
 
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import muziks.backend.domain.dto.jwtdtos.TokenDto;
+import muziks.backend.domain.dto.logindtos.LoginDto;
+import muziks.backend.domain.entity.RefreshToken;
 import muziks.backend.domain.entity.User;
 import muziks.backend.jwt.JwtTokenProvider;
-import muziks.backend.jwt.Token;
+import muziks.backend.repository.JwtRepository;
 import muziks.backend.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -16,37 +23,47 @@ import org.springframework.transaction.annotation.Transactional;
 public class LoginService {
 
     private final UserRepository userRepository;
+    private final JwtRepository jwtRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
-    public Token createAndGetToken(String id) {
-        User user = findById(id);
-        String refreshToken = jwtTokenProvider.createRefreshToken(user.getUserId(), user.getRole());
-        String accessToken = jwtTokenProvider.createAccessToken(user.getUserId(), user.getRole());
-        user.setAuthorization(refreshToken);
-        userRepository.save(user);
-        return Token.builder()
-                .userId(id)
-                .refreshToken(refreshToken)
-                .accessToken(accessToken)
-                .build();
+    public void login(LoginDto loginDto) {
+        User user = findByName(loginDto.getId()).get(0);
+        if (!jwtTokenProvider.validateToken(user.getRefreshToken().getRefreshToken(), jwtTokenProvider.getRefreshTokenKey())) {
+            String refreshToken = jwtTokenProvider.createRefreshToken(user.getUserId(), user.getRole());
+            RefreshToken existingToken = jwtRepository.findByTokenId(user.getRefreshToken().getId());
+            existingToken.setRefreshToken(refreshToken);
+        }
     }
 
-    public User findById(String id) {
-        return userRepository.findById(id).get(0);
-    }
-
-    public User findByAuthorization(String authorization) {
-        return userRepository.findByAuthorization(authorization);
+    private List<User> findByName(String name) {
+        return userRepository.findByName(name);
     }
 
     public void logout(String refreshToken) {
-        log.info("authorization= {} ",refreshToken);
-        User findUser = findByAuthorization(refreshToken);
-        findUser.setAuthorization(null);
-//        save(findUser);
+        log.info("authorization= {} ", refreshToken);
+        RefreshToken refreshTokenEntity = findByRefreshToken(refreshToken);
+        refreshTokenEntity.setRefreshToken(null);
+    }
+
+    public TokenDto getTokenDto(LoginDto loginDto) {
+        User user = findById(loginDto.getId()).get(0);
+        return TokenDto.builder()
+                        .userId(user.getUserId())
+                        .refreshToken(user.getRefreshToken().getRefreshToken())
+                        .accessToken(jwtTokenProvider.createAccessToken(user.getUserId(), user.getRole()))
+                        .build();
+
     }
 
     public void save(User user) {
         userRepository.save(user);
+    }
+
+    public List<User> findById(String id) {
+        return userRepository.findById(id);
+    }
+
+    public RefreshToken findByRefreshToken(String refreshToken) {
+        return userRepository.findRefreshTokenById(refreshToken);
     }
 }
