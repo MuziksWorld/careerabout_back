@@ -18,7 +18,7 @@ public class JwtRepository {
         em.persist(refreshToken);
     }
 
-    public RefreshToken findByTokenId(Long tokenId) {
+    public RefreshToken findByTokenId(Integer tokenId) {
         String query = "select r from RefreshToken r" +
                         " where r.id = :tokenId";
 
