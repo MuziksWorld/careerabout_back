@@ -1,4 +1,4 @@
-package muziks.backend.Jasyptconfig;
+package muziks.backend.jasyptconfig;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jasypt.encryption.StringEncryptor;
@@ -27,16 +27,11 @@ import org.springframework.context.annotation.Configuration;
 @Slf4j
 public class JasyptConfig {
 
-//    @Value("${jasypt.encryptor.password}")
-//    private String password; // 암호화 시 사용될 키 값
-
     @Bean("jasyptStringEncryptor")
-    public StringEncryptor stringEncryptor() {
-
+    public StringEncryptor stringEncryptor(@Value("${jasypt.encryptor.private-key-string}") String secretKey) {
         PooledPBEStringEncryptor encryptor = new PooledPBEStringEncryptor();
         SimpleStringPBEConfig config = new SimpleStringPBEConfig();
-        config.setPassword(System.getenv("JASYPT_PASSWORD"));
-//        config.setPassword(password);
+        config.setPassword(secretKey);
         config.setAlgorithm("PBEWithMD5AndDES");
         config.setKeyObtentionIterations("1000");
         config.setPoolSize("1");
