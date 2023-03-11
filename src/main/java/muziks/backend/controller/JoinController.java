@@ -2,9 +2,10 @@ package muziks.backend.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import muziks.backend.domain.dto.signdtos.OverlapVO;
 import muziks.backend.domain.dto.signdtos.SignDto;
-import muziks.backend.domain.dto.signdtos.SignErrorDtos;
 import muziks.backend.domain.dto.signdtos.SignErrorDto;
+import muziks.backend.domain.dto.signdtos.SignErrorDtos;
 import muziks.backend.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.HashMap;
 
 @Slf4j
 @RestController
@@ -24,7 +26,7 @@ public class JoinController {
 
     @PostMapping("/sign")
     public ResponseEntity<Object> sign(@RequestBody @Valid SignDto signDto,
-                                                    BindingResult bindingResult) {
+                                       BindingResult bindingResult) {
         validateId(bindingResult, signDto.getId());
         validatePasswordPattern(bindingResult, signDto.getPassword());
 
@@ -35,6 +37,19 @@ public class JoinController {
         userService.createAndSaveToken(signDto.getId());
         return ResponseEntity.ok()
                 .body("회원가입 완료");
+    }
+
+    @PostMapping("/idCheck")
+    public ResponseEntity<Object> isOverlappedUser(@RequestBody OverlapVO overlapVO) {
+        HashMap<String, String> result = new HashMap<>();
+        if (userService.findById(overlapVO.getUser_id()).size() > 0) {
+            result.put("data", "중복된 아이디가 존재합니다.");
+            return ResponseEntity.ok()
+                    .body(result);
+        }
+        result.put("data", "사용 가능한 아이디입니다.");
+        return ResponseEntity.ok()
+                .body(result);
     }
 
     private ResponseEntity<Object> getErrors(BindingResult bindingResult) {
