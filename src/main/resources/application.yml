@@ -19,14 +19,12 @@ spring:
         format_sql: true
         default_batch_fetch_size: 1000
 
-jasypt:
-  encryptor:
-    private-key-string: ${JASYPT_PASSWORD}
-
 logging.level:
   org.hibernate.SQL: debug
 
 jasypt.encryptor.private-key-string: ${JASYPT_PASSWORD} # jasypt토큰 키
+jwt.access-token-key: ${ACCESS_TOKEN_KEY}
+jwt.refresh-token-key: ${REFRESH_TOKEN_KEY}
 
 ---
 # test 서버

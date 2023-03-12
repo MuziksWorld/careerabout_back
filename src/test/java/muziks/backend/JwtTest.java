@@ -1,13 +1,18 @@
 package muziks.backend;
 
 
-import muziks.backend.settingconfig.JwtConfigs;
+import muziks.backend.jwt.JwtTokenProvider;
 import org.junit.jupiter.api.Test;
 
 public class JwtTest {
 
+    JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
+
     @Test
     void keyTest() {
-        System.out.println("accessTokenKey = " + JwtConfigs.REFRESH_TOKEN_KEY.getKey());
+        String refreshTokenKey = jwtTokenProvider.getRefreshTokenKey();
+        System.out.println("refreshTokenKey = " + refreshTokenKey);
+        String accessTokenKey = jwtTokenProvider.getAccessTokenKey();
+        System.out.println("accessTokenKey = " + accessTokenKey);
     }
 }

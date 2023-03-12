@@ -6,22 +6,26 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import muziks.backend.settingconfig.JwtConfigs;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.Base64;
 import java.util.Date;
 
+@Slf4j
 @RequiredArgsConstructor
 @Component
 @Getter
 public class JwtTokenProvider {
+    @Value("${jwt.refresh-token-key}")
     private String refreshTokenKey = System.getenv("REFRESH_TOKEN_KEY");
+    @Value("${jwt.access-token-key}")
     private String accessTokenKey = System.getenv("ACCESS_TOKEN_KEY");
 
     private Long accessTokenValidTime = 30 * 60 * 1000L; // 토큰 유효시간 30분
-//    private Long refreshTokenValidTime = 14 * 24 * 60 * 60 * 1000L; // 토큰 유효시간 2주
+    //    private Long refreshTokenValidTime = 14 * 24 * 60 * 60 * 1000L; // 토큰 유효시간 2주
     private Long refreshTokenValidTime = 1000L * 10; // 토큰 유효시간 10초
 
     /**
@@ -30,6 +34,8 @@ public class JwtTokenProvider {
      */
     @PostConstruct
     protected void init() {
+        log.info("###### init refreshTokenKey = {}", refreshTokenKey);
+        log.info("###### init accessTokenKey = {}", accessTokenKey);
         Base64.getEncoder().encodeToString(refreshTokenKey.getBytes());
         Base64.getEncoder().encodeToString(accessTokenKey.getBytes());
     }
