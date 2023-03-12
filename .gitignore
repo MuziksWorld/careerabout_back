@@ -38,7 +38,3 @@ out/
 
 
 # custom settings #
-
-JwtTokenProvider.java
-
-/main/java/muziks/backend/settingconfig/
