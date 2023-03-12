@@ -38,8 +38,6 @@ out/
 
 
 # custom settings #
-## .yml ##
-*.yml
 
 JwtTokenProvider.java
 
