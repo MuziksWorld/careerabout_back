@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -19,9 +20,9 @@ import java.util.Date;
 @Component
 @Getter
 public class JwtTokenProvider {
-    @Value("${jwt.refresh-token-key}")
+    //    @Value("${jwt.refresh-token-key}")
     private String refreshTokenKey = System.getenv("REFRESH_TOKEN_KEY");
-    @Value("${jwt.access-token-key}")
+//    @Value("${jwt.access-token-key}")
     private String accessTokenKey = System.getenv("ACCESS_TOKEN_KEY");
 
     private Long accessTokenValidTime = 30 * 60 * 1000L; // 토큰 유효시간 30분
@@ -33,9 +34,8 @@ public class JwtTokenProvider {
      * 이렇게 하면 디코딩할 때도 시크릿키를 똑같이 인코딩해서 주어야 함
      */
     @PostConstruct
+//    @Bean("JwtTokenProviderInitMethod")
     protected void init() {
-        log.info("###### init refreshTokenKey = {}", refreshTokenKey);
-        log.info("###### init accessTokenKey = {}", accessTokenKey);
         Base64.getEncoder().encodeToString(refreshTokenKey.getBytes());
         Base64.getEncoder().encodeToString(accessTokenKey.getBytes());
     }

@@ -10,6 +10,8 @@ import muziks.backend.domain.utils.PasswordUtils;
 import muziks.backend.jwt.JwtTokenProvider;
 import muziks.backend.repository.JwtRepository;
 import muziks.backend.repository.UserRepository;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +29,7 @@ import java.util.regex.Pattern;
 @Service
 @Transactional
 @RequiredArgsConstructor
+//@DependsOn(value = {"JwtTokenProviderInitMethod"})
 public class UserService {
 
     private final UserRepository userRepository;
