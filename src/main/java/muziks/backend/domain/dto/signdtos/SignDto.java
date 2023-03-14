@@ -1,22 +1,20 @@
 package muziks.backend.domain.dto.signdtos;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import muziks.backend.domain.utils.PasswordUtils;
-import muziks.backend.repository.UserRepository;
-import muziks.backend.service.UserService;
+import muziks.backend.domain.entity.User;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.util.regex.Pattern;
 
+@Builder
 @Data
-@RequiredArgsConstructor
 public class SignDto {
 
     @NotBlank(message = "아이디를 입력해주세요.")
     @Size(min=4, max=20, message = "아이디는 4자 이상, 20자 이하로 입력해주세요.")
-    private final String id;
+    private final String userId;
 
     @NotBlank(message = "비밀번호를 입력해주세요.")
     @Size(min=8, max=16, message = "비밀번호는 8자 이상, 16자 이하로 입력해주세요.")
@@ -31,4 +29,13 @@ public class SignDto {
     private final String phoneNumber;
 
     private boolean isOverlappedId;
+
+    public User toEntity(SignDto signDto) {
+        return User.builder()
+                .userId(signDto.getUserId())
+                .password(signDto.getPassword())
+                .name(signDto.getName())
+                .phoneNumber(signDto.getPhoneNumber())
+                .build();
+    }
 }

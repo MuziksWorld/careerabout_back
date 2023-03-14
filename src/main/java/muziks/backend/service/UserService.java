@@ -19,7 +19,6 @@ import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.regex.Pattern;
 
 
@@ -34,16 +33,17 @@ public class UserService {
     private final JwtTokenProvider jwtTokenProvider;
 
     public void save(SignDto form) {
-        User user = new User();
-        user.setUserId(form.getId());
+
         String password = form.getPassword();
         String salt = salt();
-        String hashedPassword = sha512(password, salt);
 
-        user.setSalt(salt);
-        user.setPassword(hashedPassword);
-        user.setName(form.getName());
-        user.setPhoneNumber(form.getPhoneNumber());
+        User user = User.builder()
+                    .userId(form.getUserId())
+                    .salt(salt)
+                .password(sha512(password, salt))
+                .name(form.getName())
+                .phoneNumber(form.getPhoneNumber())
+                .build();
 
         userRepository.save(user);
     }

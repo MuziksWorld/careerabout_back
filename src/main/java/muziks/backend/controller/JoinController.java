@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -29,7 +28,7 @@ public class JoinController {
     @PostMapping("/sign")
     public ResponseEntity<Object> sign(@RequestBody @Valid SignDto signDto,
                                        BindingResult bindingResult) {
-        validateId(bindingResult, signDto.getId());
+        validateId(bindingResult, signDto.getUserId());
         validatePasswordPattern(bindingResult, signDto.getPassword());
 
         if (bindingResult.hasErrors()) {
@@ -38,7 +37,7 @@ public class JoinController {
                     .body(false);
         }
         userService.save(signDto);
-        userService.createAndSaveToken(signDto.getId());
+        userService.createAndSaveToken(signDto.getUserId());
         return ResponseEntity.ok()
                 .body(true);
     }
