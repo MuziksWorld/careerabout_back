@@ -32,7 +32,7 @@ public class UserService {
     private final JwtRepository jwtRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
-    public void save(SignDto form) {
+    public SignDto save(SignDto form) {
 
         String password = form.getPassword();
         String salt = salt();
@@ -40,12 +40,19 @@ public class UserService {
         User user = User.builder()
                     .userId(form.getUserId())
                     .salt(salt)
-                .password(sha512(password, salt))
-                .name(form.getName())
-                .phoneNumber(form.getPhoneNumber())
-                .build();
+                    .password(sha512(password, salt))
+                    .name(form.getUserName())
+                    .phoneNumber(form.getPhoneNumber())
+                    .build();
 
         userRepository.save(user);
+
+        return SignDto.builder()
+                .userId(user.getUserId())
+                .password(user.getPassword())
+                .userName(user.getName())
+                .phoneNumber(user.getPhoneNumber())
+                .build();
     }
 
     public void createAndSaveToken(String id) {

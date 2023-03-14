@@ -23,7 +23,7 @@ public class DBConnectionTest {
         SignDto signDto = SignDto.builder()
                 .userId("test")
                 .password("Test123!!")
-                .name("테스트")
+                .userName("테스트")
                 .phoneNumber("01012341234")
                 .build();
         userRepository.save(signDto.toEntity(signDto));

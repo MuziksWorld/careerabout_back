@@ -77,13 +77,13 @@ public class LoginController {
     }
 
     private void validateLoginPassword(LoginDto loginDto, BindingResult result) {
-        if (!userService.isMatches(loginDto.getId(), loginDto.getPassword())) {
+        if (!userService.isMatches(loginDto.getUserId(), loginDto.getPassword())) {
             result.addError(new FieldError("loginForm", "password", "비밀번호가 올바르지 않습니다."));
         }
     }
 
     private void validateLoginId(LoginDto loginDto, BindingResult result) {
-        if (userService.findById(loginDto.getId()).size() == 0) {
+        if (userService.findById(loginDto.getUserId()).size() == 0) {
             result.addError(new FieldError("loginForm", "id", "아이디가 존재하지 않습니다."));
         }
     }

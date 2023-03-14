@@ -8,6 +8,7 @@ import muziks.backend.domain.dto.signdtos.SignErrorDto;
 import muziks.backend.domain.dto.signdtos.SignErrorDtos;
 import muziks.backend.domain.entity.User;
 import muziks.backend.service.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -33,12 +34,14 @@ public class JoinController {
 
         if (bindingResult.hasErrors()) {
 //            return getErrors(bindingResult);
-            return ResponseEntity.ok()
-                    .body(false);
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+//                    .body(false);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(signDto);
         }
         userService.save(signDto);
         userService.createAndSaveToken(signDto.getUserId());
-        return ResponseEntity.ok()
+        return ResponseEntity.status(HttpStatus.OK)
                 .body(true);
     }
 

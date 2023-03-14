@@ -4,7 +4,9 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -16,7 +18,7 @@ import java.util.Date;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-@Getter
+@Data
 public class JwtTokenProvider {
     //    @Value("${jwt.refresh-token-key}")
     private String refreshTokenKey = System.getenv("REFRESH_TOKEN_KEY");
@@ -25,7 +27,7 @@ public class JwtTokenProvider {
 
     private Long accessTokenValidTime = 30 * 60 * 1000L; // 토큰 유효시간 30분
     //    private Long refreshTokenValidTime = 14 * 24 * 60 * 60 * 1000L; // 토큰 유효시간 2주
-    private Long refreshTokenValidTime = 1000L * 10; // 토큰 유효시간 10초
+    private Long refreshTokenValidTime = 1000L * 60 * 60; // 토큰 유효시간 1시간
 
     /**
      * 객체 초기회, secretKey를 Base64로 인코딩한다.

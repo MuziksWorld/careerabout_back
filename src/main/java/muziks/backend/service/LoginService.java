@@ -1,6 +1,5 @@
 package muziks.backend.service;
 
-import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import muziks.backend.domain.dto.jwtdtos.TokenDto;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @Service
@@ -27,7 +25,7 @@ public class LoginService {
     private final JwtTokenProvider jwtTokenProvider;
 
     public void login(LoginDto loginDto) {
-        User user = findById(loginDto.getId()).get(0);
+        User user = findById(loginDto.getUserId()).get(0);
         if (!jwtTokenProvider.validateToken(user.getRefreshToken().getRefreshToken(), jwtTokenProvider.getRefreshTokenKey())) {
             String refreshToken = jwtTokenProvider.createRefreshToken(user.getUserId(), user.getRole());
             RefreshToken existingToken = jwtRepository.findByTokenId(user.getRefreshToken().getId());
@@ -42,7 +40,7 @@ public class LoginService {
     }
 
     public TokenDto getTokenDto(LoginDto loginDto) {
-        User user = findById(loginDto.getId()).get(0);
+        User user = findById(loginDto.getUserId()).get(0);
         return TokenDto.builder()
                         .userId(user.getUserId())
                         .refreshToken(user.getRefreshToken().getRefreshToken())

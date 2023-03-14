@@ -14,8 +14,9 @@ public class UserRepository {
 
     private final EntityManager em;
 
-    public void save(User user) {
+    public User save(User user) {
         em.persist(user);
+        return user;
     }
 
     public List<User> findByName(String name) {
