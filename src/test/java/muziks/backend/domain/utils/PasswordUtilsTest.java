@@ -2,20 +2,13 @@ package muziks.backend.domain.utils;
 
 import lombok.extern.slf4j.Slf4j;
 import muziks.backend.domain.dto.logindtos.LoginDto;
-import muziks.backend.domain.dto.signdtos.SignDto;
-import muziks.backend.repository.UserRepository;
+import muziks.backend.repository.UserRepositoryCustom;
 import muziks.backend.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.ResultMatcher;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.regex.Pattern;
 
@@ -37,7 +30,7 @@ class PasswordUtilsTest {
     private UserService userService;
 
     @Mock
-    private UserRepository repository;
+    private UserRepositoryCustom repository;
 
     private MockMvc mockMvc;
 

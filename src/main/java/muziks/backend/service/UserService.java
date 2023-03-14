@@ -8,7 +8,7 @@ import muziks.backend.domain.entity.User;
 import muziks.backend.domain.utils.PasswordUtils;
 import muziks.backend.jwt.JwtTokenProvider;
 import muziks.backend.repository.JwtRepository;
-import muziks.backend.repository.UserRepository;
+import muziks.backend.repository.UserRepositoryCustom;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserRepository userRepository;
+    private final UserRepositoryCustom userRepositoryCustom;
     private final JwtRepository jwtRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -45,7 +45,7 @@ public class UserService {
                     .phoneNumber(form.getPhoneNumber())
                     .build();
 
-        userRepository.save(user);
+        userRepositoryCustom.save(user);
 
         return SignDto.builder()
                 .userId(user.getUserId())
@@ -65,24 +65,24 @@ public class UserService {
         refreshTokenEntity.setRefreshToken(refreshToken);
         user.setRefreshToken(refreshTokenEntity);
         jwtRepository.save(refreshTokenEntity);
-        userRepository.save(user);
+        userRepositoryCustom.save(user);
     }
 
     public List<User> findById(String id) {
-        return userRepository.findById(id);
+        return userRepositoryCustom.findById(id);
     }
 
     public List<User> findByName(String name) {
-        return userRepository.findByName(name);
+        return userRepositoryCustom.findByName(name);
     }
 
     public boolean isMatches(String userId, String password) {
         //TODO
         // 어떻게 하면 null 방어적으로 깔끔하게 코드를 짤 수 있을까?
-        if (userRepository.findById(userId).isEmpty()) {
+        if (userRepositoryCustom.findById(userId).isEmpty()) {
             return false;
         }
-        User user = userRepository.findById(userId).get(0);
+        User user = userRepositoryCustom.findById(userId).get(0);
         String salt = user.getSalt();
 
         String findPassword = sha512(password, salt);

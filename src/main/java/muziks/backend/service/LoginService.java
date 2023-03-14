@@ -8,7 +8,7 @@ import muziks.backend.domain.entity.RefreshToken;
 import muziks.backend.domain.entity.User;
 import muziks.backend.jwt.JwtTokenProvider;
 import muziks.backend.repository.JwtRepository;
-import muziks.backend.repository.UserRepository;
+import muziks.backend.repository.UserRepositoryCustom;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class LoginService {
 
-    private final UserRepository userRepository;
+    private final UserRepositoryCustom userRepositoryCustom;
     private final JwtRepository jwtRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -50,18 +50,18 @@ public class LoginService {
     }
 
     private List<User> findByName(String name) {
-        return userRepository.findByName(name);
+        return userRepositoryCustom.findByName(name);
     }
 
     public void save(User user) {
-        userRepository.save(user);
+        userRepositoryCustom.save(user);
     }
 
     public List<User> findById(String id) {
-        return userRepository.findById(id);
+        return userRepositoryCustom.findById(id);
     }
 
     public RefreshToken findByRefreshToken(String refreshToken) {
-        return userRepository.findRefreshTokenById(refreshToken);
+        return userRepositoryCustom.findRefreshTokenById(refreshToken);
     }
 }
