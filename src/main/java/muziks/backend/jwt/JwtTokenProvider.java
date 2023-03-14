@@ -7,8 +7,6 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -22,7 +20,7 @@ import java.util.Date;
 public class JwtTokenProvider {
     //    @Value("${jwt.refresh-token-key}")
     private String refreshTokenKey = System.getenv("REFRESH_TOKEN_KEY");
-//    @Value("${jwt.access-token-key}")
+    //    @Value("${jwt.access-token-key}")
     private String accessTokenKey = System.getenv("ACCESS_TOKEN_KEY");
 
     private Long accessTokenValidTime = 30 * 60 * 1000L; // 토큰 유효시간 30분
@@ -34,7 +32,6 @@ public class JwtTokenProvider {
      * 이렇게 하면 디코딩할 때도 시크릿키를 똑같이 인코딩해서 주어야 함
      */
     @PostConstruct
-//    @Bean("JwtTokenProviderInitMethod")
     protected void init() {
         Base64.getEncoder().encodeToString(refreshTokenKey.getBytes());
         Base64.getEncoder().encodeToString(accessTokenKey.getBytes());
@@ -86,9 +83,9 @@ public class JwtTokenProvider {
     }
 
     // token의 유효성, 만료일자 확인
-    public boolean validateToken(String jwtToken, String tokenKey) {
+    public boolean validateToken(String token, String tokenKey) {
         try {
-            Jws<Claims> claims = Jwts.parser().setSigningKey(tokenKey).parseClaimsJws(jwtToken);
+            Jws<Claims> claims = Jwts.parser().setSigningKey(tokenKey).parseClaimsJws(token);
             return !claims.getBody().getExpiration().before(new Date());
         } catch (Exception e) {
             return false;

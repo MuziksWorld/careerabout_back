@@ -6,6 +6,7 @@ import muziks.backend.domain.dto.signdtos.OverlapVO;
 import muziks.backend.domain.dto.signdtos.SignDto;
 import muziks.backend.domain.dto.signdtos.SignErrorDto;
 import muziks.backend.domain.dto.signdtos.SignErrorDtos;
+import muziks.backend.domain.entity.User;
 import muziks.backend.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -15,7 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -31,25 +33,27 @@ public class JoinController {
         validatePasswordPattern(bindingResult, signDto.getPassword());
 
         if (bindingResult.hasErrors()) {
-            return getErrors(bindingResult);
+//            return getErrors(bindingResult);
+            return ResponseEntity.ok()
+                    .body(false);
         }
-        userService.sign(signDto);
+        userService.save(signDto);
         userService.createAndSaveToken(signDto.getId());
         return ResponseEntity.ok()
-                .body("회원가입 완료");
+                .body(true);
     }
 
     @PostMapping("/idCheck")
     public ResponseEntity<Object> isOverlappedUser(@RequestBody OverlapVO overlapVO) {
-        HashMap<String, String> result = new HashMap<>();
+//        HashMap<String, String> result = new HashMap<>();
         if (userService.findById(overlapVO.getUser_id()).size() > 0) {
-            result.put("data", "중복된 아이디가 존재합니다.");
+//            result.put("data", "중복된 아이디가 존재합니다.");
             return ResponseEntity.ok()
-                    .body(result);
+                    .body(false);
         }
-        result.put("data", "사용 가능한 아이디입니다.");
+//        result.put("data", "사용 가능한 아이디입니다.");
         return ResponseEntity.ok()
-                .body(result);
+                .body(true);
     }
 
     private ResponseEntity<Object> getErrors(BindingResult bindingResult) {
@@ -63,13 +67,18 @@ public class JoinController {
 
     private void validatePasswordPattern(BindingResult result, String password) {
         if (!userService.isValidPassword(password)) {
-            result.addError(new FieldError("signDto", "password", "알바벳 대문자, 소문자, 숫자, 그리고 하나 이상의 특수문자를 포함해주세요."));
+            FieldError fieldError = new FieldError("signDto", "password", "알바벳 대문자, 소문자, 숫자, 그리고 하나 이상의 특수문자를 포함해주세요.");
+            result.addError(fieldError);
+            log.info("message={}", fieldError.getDefaultMessage());
         }
     }
 
     private void validateId(BindingResult result, String id) {
+        List<User> findUser = userService.findById(id);
         if (userService.findById(id).size() >= 1) {
-            result.addError(new FieldError("signForm", "id", "중복된 아이디가 존재합니다."));
+            FieldError fieldError = new FieldError("signForm", "id", "중복된 아이디가 존재합니다.");
+            result.addError(fieldError);
+            log.info("message={}", fieldError.getDefaultMessage());
         }
     }
 }

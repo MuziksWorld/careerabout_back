@@ -27,16 +27,12 @@ public class LoginService {
     private final JwtTokenProvider jwtTokenProvider;
 
     public void login(LoginDto loginDto) {
-        User user = findByName(loginDto.getId()).get(0);
+        User user = findById(loginDto.getId()).get(0);
         if (!jwtTokenProvider.validateToken(user.getRefreshToken().getRefreshToken(), jwtTokenProvider.getRefreshTokenKey())) {
             String refreshToken = jwtTokenProvider.createRefreshToken(user.getUserId(), user.getRole());
             RefreshToken existingToken = jwtRepository.findByTokenId(user.getRefreshToken().getId());
             existingToken.setRefreshToken(refreshToken);
         }
-    }
-
-    private List<User> findByName(String name) {
-        return userRepository.findByName(name);
     }
 
     public void logout(String refreshToken) {
@@ -53,6 +49,10 @@ public class LoginService {
                         .accessToken(jwtTokenProvider.createAccessToken(user.getUserId(), user.getRole()))
                         .build();
 
+    }
+
+    private List<User> findByName(String name) {
+        return userRepository.findByName(name);
     }
 
     public void save(User user) {

@@ -2,16 +2,13 @@ package muziks.backend.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import muziks.backend.domain.dto.jwtdtos.TokenDto;
+import muziks.backend.domain.dto.signdtos.SignDto;
 import muziks.backend.domain.entity.RefreshToken;
 import muziks.backend.domain.entity.User;
-import muziks.backend.domain.dto.signdtos.SignDto;
 import muziks.backend.domain.utils.PasswordUtils;
 import muziks.backend.jwt.JwtTokenProvider;
 import muziks.backend.repository.JwtRepository;
 import muziks.backend.repository.UserRepository;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +19,7 @@ import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 
@@ -29,18 +27,13 @@ import java.util.regex.Pattern;
 @Service
 @Transactional
 @RequiredArgsConstructor
-//@DependsOn(value = {"JwtTokenProviderInitMethod"})
 public class UserService {
 
     private final UserRepository userRepository;
     private final JwtRepository jwtRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
-    public void save(User user) {
-        userRepository.save(user);
-    }
-
-    public void sign(SignDto form) {
+    public void save(SignDto form) {
         User user = new User();
         user.setUserId(form.getId());
         String password = form.getPassword();
@@ -56,7 +49,7 @@ public class UserService {
     }
 
     public void createAndSaveToken(String id) {
-        User user = findByName(id).get(0);
+        User user = findById(id).get(0);
         String refreshToken = jwtTokenProvider.createRefreshToken(user.getUserId(), user.getRole());
         String accessToken = jwtTokenProvider.createAccessToken(user.getUserId(), user.getRole());
         log.info("refreshToken= {}", refreshToken);
@@ -79,10 +72,10 @@ public class UserService {
     public boolean isMatches(String userId, String password) {
         //TODO
         // 어떻게 하면 null 방어적으로 깔끔하게 코드를 짤 수 있을까?
-        if (userRepository.findByName(userId).isEmpty()) {
+        if (userRepository.findById(userId).isEmpty()) {
             return false;
         }
-        User user = userRepository.findByName(userId).get(0);
+        User user = userRepository.findById(userId).get(0);
         String salt = user.getSalt();
 
         String findPassword = sha512(password, salt);

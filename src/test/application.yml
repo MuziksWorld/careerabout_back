@@ -1,0 +1,21 @@
+# test 서버
+spring:
+  config.activate.on-profile: test
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ENC(lNW7uYTotbgO6Q9L5hU6oBA6VxZxZTzwu29LsykeCU4ZWII5ABrlzSSJwW5kxX20DpoIbiAAekuel60aAMNaIbSKSBeUEA5MQpMw/upas3I=)
+    username: ENC(DR5i440Os0hci5LYMikp8A==)
+    password: ENC(QfAHJVBA1/iRo9+Neol/s5zE7DSZh+eR)
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: 1000
+
+logging.level:
+  org.hibernate.SQL: debug
+
+jasypt.encryptor.private-key-string: ${JASYPT_PASSWORD} # jasypt토큰 키

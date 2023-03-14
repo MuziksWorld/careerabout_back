@@ -42,7 +42,6 @@ public class User {
     private String salt;
     @Column(name = "role", columnDefinition = "VARCHAR", length = 60)
     private String role;
-//    private String authorization;
 
 
 //    @Column(name = "user_id")

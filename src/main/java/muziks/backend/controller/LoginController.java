@@ -46,6 +46,7 @@ public class LoginController {
         result.put("refreshToken", tokenDto.getRefreshToken());
         result.put("userInfo", jwtTokenProvider.getUserPk(tokenDto.getAccessToken(), jwtTokenProvider.getAccessTokenKey()));
         result.put("accessTokenInfo", jwtTokenProvider.getAuthentication(tokenDto.getAccessToken(), jwtTokenProvider.getAccessTokenKey()));
+        log.info("#### tokenInfo={} #####", result);
 
         return ResponseEntity.ok()
                 .body(result);
@@ -82,7 +83,7 @@ public class LoginController {
     }
 
     private void validateLoginId(LoginDto loginDto, BindingResult result) {
-        if (userService.findByName(loginDto.getId()).size() == 0) {
+        if (userService.findById(loginDto.getId()).size() == 0) {
             result.addError(new FieldError("loginForm", "id", "아이디가 존재하지 않습니다."));
         }
     }
