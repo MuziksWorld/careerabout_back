@@ -34,8 +34,6 @@ public class JoinController {
 
         if (bindingResult.hasErrors()) {
 //            return getErrors(bindingResult);
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-//                    .body(false);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(signDto);
         }
@@ -68,6 +66,7 @@ public class JoinController {
     }
 
     private void validatePasswordPattern(BindingResult result, String password) {
+        boolean isValidPassword = userService.isValidPassword(password);// 테스트용
         if (!userService.isValidPassword(password)) {
             FieldError fieldError = new FieldError("signDto", "password", "알바벳 대문자, 소문자, 숫자, 그리고 하나 이상의 특수문자를 포함해주세요.");
             result.addError(fieldError);
